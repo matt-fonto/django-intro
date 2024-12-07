@@ -234,3 +234,57 @@ urlpatterns = [
 ```
 
 - After we set the views and the urls in the application-level, we need to set it also up on the project level
+
+## Templates
+
+- Reusable HTML file + dynamic data
+- Create the templates inside the app_folder/templates
+- Once we create our template, we should add them to view
+
+```py
+def home(request):
+    # home.html is extending the content from base.html
+    return render(request, 'home.html') # my_app/templates/home.html
+```
+
+## Database Models
+
+- We create the models app/models.py as a Python class
+
+```py
+# app/models.py => create the models
+from django.db import models
+
+# Create your models here.
+class TodoItem(models.Model):
+    title = models.CharField(max_length=200)
+    completed = models.BooleanField(default=False)
+```
+
+- Once we create them, we register them on admin.py
+
+```py
+# app/admin.py => register the models
+from django.contrib import admin
+from .models import TodoItem
+
+# Register your models here.
+admin.site.register(TodoItem)
+```
+
+### Migrations
+
+- When we make a change to our db models, we need to migrate. (Automated code which updates the db)
+- Every time we make a change to the models, we run:
+  - `python manage.py makemigrations`: creates the instructions to update the db
+    - Create migration files based on models change.
+    - Contains instructions on how to update the db schema
+    - After we make changes to models
+  - `python manage.py migrate`: applies the changes to db
+    - Applies the migration files to the database
+    - Updates the database
+
+## Django Admin Panel
+
+- Create a user: `python manage.py createsuperuser`
+- Access the admin panel: `base-route/admin`

@@ -1,0 +1,15 @@
+<!-- prettier-ignore -->
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Todo list</h2>
+
+<ul>
+  {% for todo in todos %}
+  <li>
+    {{todo.title}}: {% if todo.completed %} Completed {% else %} Not completed
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}
