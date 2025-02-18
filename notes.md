@@ -12,7 +12,7 @@
 
 - Model: Represents the database schema and data handling. Each model is a Python class that maps to a database table
 - Template: Handles the presentation layer, defined how data is displayed in HTML (or other formats)
-- View: Contains the lofic to process requests and return responses (rendering templates or returning JSON)
+- View: Contains the logic to process requests and return responses (rendering templates or returning JSON)
 
 ### Settings, URL and Routing
 
