@@ -1,5 +1,5 @@
 """
-URL configuration for django_intro project.
+URL configuration for core project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -15,15 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # when we go to this specific route, forward all the URLS/routes into this app.
-    # by doing this, the myapp/urls.py will handle the logic
-    # we could specificy 
-    #   path("") => it means the home page
-    #   path("path-example1/")
-    #   path("path-example2/")...
-    path("", include("myapp.urls")) # connecting the app to the project
 ]
