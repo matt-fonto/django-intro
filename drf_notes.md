@@ -12,7 +12,8 @@
    - 2.2. [Create a serializer](#22-create-serializer)
    - 2.3. [Create a view](#23-create-a-view)
    - 2.4. [Config URLs](#24-config-urls)
-   - 2.5. [Running the server](#25-running-the-server)
+   - 2.5. [Registering models in the admin panel](#25-registering-models-in-the-admin-panel)
+   - 2.6. [Running the server](#25-running-the-server)
 
 <a name="1-setup"></a>
 
@@ -143,7 +144,7 @@ from rest_framework.routers import DefaultRouter
 from .views import ItemViewSet
 
 router = DefaultRouter()
-router.register = (r"items", ItemViewSet)
+router.register(r"items", ItemViewSet)
 
 urlpatterns = [
     path("", include(router.urls))
@@ -164,10 +165,23 @@ urlspatterns = [
 ]
 ```
 
-<a name="25-running-the-server"></a>
+<a name="25-registering-models-in-the-admin-panel"></a>
 
-### 2.5 Running the server
+### 2.6. Registering models in the admin panel
 
 ```py
+# api/admin.py
+from django.contrib import admin
+from .models import Item
+
+admin.site.register(Item)
+```
+
+<a name="26-running-the-server"></a>
+
+### 2.6 Running the server
+
+```py
+python manage.py createsuperuser
 python manage.py runserver
 ```
