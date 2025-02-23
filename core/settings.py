@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # Local apps
-    'api',
+    'api', # same name as the django app
 ]
 
 MIDDLEWARE = [

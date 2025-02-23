@@ -18,6 +18,13 @@
    - 3.1. [Create a Dockerfile](#31-create-a-dockerfile)
    - 3.2. [Create a docker-compose file](#32-create-a-docker-compose-file)
    - 3.3. [Build and run the container](#33-build-and-run-the-container)
+4. [Types of views](#4-types-of-views)
+   - 4.1. [Function-based views](#41-function-based-views)
+   - 4.2. [Class-based views](#42-class-based-views)
+   - 4.3. [Viewsets](#43-viewsets)
+   - 4.4. [Generic views](#44-generic-views)
+   - 4.5. [Mixins](#45-mixins)
+     -4.6. [APIView](#46-apiview)
 
 <a name="1-setup"></a>
 
@@ -82,12 +89,14 @@ INSTALLED_APPS = [
 
 ### 2.1. Create a model
 
+- Django uses an ORM, so it maps Python code to SQL commands, so CRUD operations are abstracted by its ORM
+
 ```python
 # api/models
 
 from django.db import models
 
-class Item(models.Model):
+class Item(models.Model): # table in a SQL database
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
@@ -106,6 +115,8 @@ python manage.py migrate # applies migration
 
 ### 2.2. Create a serializer
 
+- A class that takes the models and converts back and forth from model to JSON data
+
 ```py
 # api/serializers.py
 
@@ -121,6 +132,10 @@ class ItemSerializer(serializers.ModelSerializer):
 <a name="23-create-a-view"></a>
 
 ### 2.3. Create a view
+
+- View uses:
+  - Model
+  - Serializer
 
 ```py
 # api/views.py
@@ -190,7 +205,11 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
+<a name="3-dockerizing-the-project"></a>
+
 ## 3. Dockerizing the project
+
+<a name="31-create-a-dockerfile"></a>
 
 ### 3.1. Create a Dockerfile
 
@@ -214,6 +233,8 @@ EXPOSE 8000
 CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
 ```
 
+<a name="32-create-a-docker-compose-file"></a>
+
 ### 3.2. Create a docker-compose file
 
 ```yml
@@ -230,9 +251,120 @@ services:
       - DEBUG=True
 ```
 
+<a name="33-build-and-run-the-container"></a>
+
 ### 3.3. Build and run the container
 
 ```bash
 docker-compose up --build
 ``
 ```
+
+## 4. Types of views
+
+### 4.1. Function-Based Views
+
+- Standard way Django views to handle API requests using function
+- Rely on `@api_view` decorator
+
+```py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+@api_view(['GET', 'POST'])
+def item_list(request):
+    if request.method == "GET"
+        return Response({"message": "List of items"}, status=status.HTTP_200_OK)
+    elif request.method == "POST"
+        return Response({"message": "Item created"}, status=status.HTTP_201_CREATED)
+```
+
+#### When to use it?
+
+- Simple API endpoints
+- Minimal boilerplate
+
+### 4.2. Class-Based Views (APIView)
+
+- `APIView` is a base class that provides request methods as class methods instead of functions
+
+```py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+class ItemList(APIView):
+    # class method
+    def get(self, request):
+        return Response({"message": "List of items"}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        return Response({"message": "Item created"}, status=status.HTTP_201_CREATED)
+```
+
+#### When to use it?
+
+- Simple API endpoints, but with classes inheritance
+- Makes the code more modular and maintainable than using FBV
+
+### 4.3. Mixins
+
+- Mixins are reusable classes that provide pre-built behaviors for handling CRUD operations
+- Instead of writing GET, POST, PUT and DELETE manually, inherit the mixins
+
+```py
+from rest_framework import mixins, generics
+from .models import Item
+from .serializers import ItemSerializer
+
+class ItemList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+```
+
+#### When to use it?
+
+- When you need partial CRUD functionality
+- When using generic views, but with some level of customization
+
+### 4.4 Generic Views (Simplified Mixins)
+
+- DRF provides generic class-based views, which combine mixins automatically to reduce boilerplate code
+
+```py
+from rest_framework import generics
+from .models import Item
+from .serializers import ItemSerializer
+
+class ItemListCreateView(generics.ListCreateAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
+class ItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+```
+
+#### When to use it?
+
+- Working with standard CRUD operations
+- Whan you want to avoid repetitive mixins
+
+#### Common Generic Views
+
+- ListAPIView: GET | read-only list of objects
+- RetrieveAPIView: GET | get a single object
+- CreateAPIView: POST | create a new object
+- UpdateAPIView: PUT/PATCH | update a single object
+- DeleteAPIView: DELETE | delete a single object
+- ListCreateAPIView: GET + POST | Combines ListAPIView + CreateAPIView
+- RetrieveUpdateDestroyAPIView: GET (1) + PUT/PATCH + DELETE | Combines Retrieve, Update and Delete
+
+### 4.5. ViewSets
