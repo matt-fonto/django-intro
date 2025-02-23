@@ -377,3 +377,29 @@ class ItemDetailView(generics.RetrieveUpdateDestroyAPIView):
 - RetrieveUpdateDestroyAPIView: GET (1) + PUT/PATCH + DELETE | Combines Retrieve, Update and Delete
 
 ### 4.5. ViewSets
+
+- Automatically generates CRUD operations without explicitly defining the methods
+- Paired with routes to generate the URLS
+
+```py
+# views.py
+from rest_framework import viewsets
+from .models import Item
+from .serializers import ItemSerializer
+
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
+# urls.py
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from .views import ItemViewSet
+
+router = DefaultRouter()
+router.register(r"items", ItemViewSet)
+
+urlpatterns = [
+    path("", include(router.urls))
+]
+```
