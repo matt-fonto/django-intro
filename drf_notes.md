@@ -19,12 +19,11 @@
    - 3.2. [Create a docker-compose file](#32-create-a-docker-compose-file)
    - 3.3. [Build and run the container](#33-build-and-run-the-container)
 4. [Types of views](#4-types-of-views)
-   - 4.1. [Function-based views](#41-function-based-views)
-   - 4.2. [Class-based views](#42-class-based-views)
-   - 4.3. [Viewsets](#43-viewsets)
-   - 4.4. [Generic views](#44-generic-views)
-   - 4.5. [Mixins](#45-mixins)
-     -4.6. [APIView](#46-apiview)
+   - 4.1. [Function-Based](#41-function-based)
+   - 4.2. [Class-Based](#42-class-based)
+   - 4.3. [Mixins](#43-mixins)
+   - 4.4. [Generic Views](#44-generic-views)
+   - 4.5. [ViewSets](#45-viewsets)
 
 <a name="1-setup"></a>
 
@@ -260,7 +259,11 @@ docker-compose up --build
 ``
 ```
 
+<a name="4-types-of-views"></a>
+
 ## 4. Types of views
+
+<a name="41-function-based"></a>
 
 ### 4.1. Function-Based Views
 
@@ -285,6 +288,8 @@ def item_list(request):
 - Simple API endpoints
 - Minimal boilerplate
 
+<a name="42-class-based"></a>
+
 ### 4.2. Class-Based Views (APIView)
 
 - `APIView` is a base class that provides request methods as class methods instead of functions
@@ -307,6 +312,8 @@ class ItemList(APIView):
 
 - Simple API endpoints, but with classes inheritance
 - Makes the code more modular and maintainable than using FBV
+
+<a name="43-mixins"></a>
 
 ### 4.3. Mixins
 
@@ -333,6 +340,8 @@ class ItemList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
 
 - When you need partial CRUD functionality
 - When using generic views, but with some level of customization
+
+<a name="44-generic-views"></a>
 
 ### 4.4 Generic Views (Simplified Mixins)
 
