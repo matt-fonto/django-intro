@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    container_name: django_app
+    ports:
+      # -"host_port:container_port"
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True

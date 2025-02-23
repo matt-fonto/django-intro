@@ -14,6 +14,10 @@
    - 2.4. [Config URLs](#24-config-urls)
    - 2.5. [Registering models in the admin panel](#25-registering-models-in-the-admin-panel)
    - 2.6. [Running the server](#25-running-the-server)
+3. [Dockerizing the project](#3-dockerizing-the-project)
+   - 3.1. [Create a Dockerfile](#31-create-a-dockerfile)
+   - 3.2. [Create a docker-compose file](#32-create-a-docker-compose-file)
+   - 3.3. [Build and run the container](#33-build-and-run-the-container)
 
 <a name="1-setup"></a>
 
@@ -184,4 +188,51 @@ admin.site.register(Item)
 ```py
 python manage.py createsuperuser
 python manage.py runserver
+```
+
+## 3. Dockerizing the project
+
+### 3.1. Create a Dockerfile
+
+```Dockerfile
+FROM python:3.11
+
+# Prevents Python from buffering stdout and stderr
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /app
+
+COPY requirements.txt /app/
+
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt  # Fixed typo here
+
+COPY . /app/
+
+EXPOSE 8000
+
+CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+```
+
+### 3.2. Create a docker-compose file
+
+```yml
+services:
+  web:
+    build: .
+    container_name: django_app
+    ports:
+      # -"host_port:container_port"
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True
+```
+
+### 3.3. Build and run the container
+
+```bash
+docker-compose up --build
+``
 ```
