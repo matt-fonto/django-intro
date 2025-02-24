@@ -1,5 +1,7 @@
 # Django Rest Framework
 
+- DRF is a toolkit for building web APIs
+
 ### Table of contents
 
 1. [Setup](#1-setup)
@@ -24,6 +26,7 @@
    - 4.3. [Mixins](#43-mixins)
    - 4.4. [Generic Views](#44-generic-views)
    - 4.5. [ViewSets](#45-viewsets)
+5. [DRF Unit Testing](#5-drf-unit-testing)
 
 <a name="1-setup"></a>
 
@@ -428,4 +431,19 @@ router.register(r"items", ItemViewSet)
 urlpatterns = [
     path("", include(router.urls))
 ]
+```
+
+## 5. DRF Unit Testing
+
+- Django uses Python's `unittest` module.
+- Create a `tests.py` inside the `api/` app, if not already there
+
+```py
+# tests.py
+
+from django.test import TestCase
+from rest_framework.test import APITestCase
+from rest_framework import status
+from django.contrib.auth.models import User
+from .models import Item
 ```
