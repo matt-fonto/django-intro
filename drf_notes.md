@@ -177,15 +177,17 @@ urlpatterns = [
 from django.contrib import admin
 from django.urls import path, include
 
-urlspatterns = [
-    path("admin/", admin.site.urls),
-    path("api/", include("api.urls"))
+urlpatterns = [
+    # forwards requests to the api app
+
+    path('admin/', admin.site.urls), # requests to /admin/ are forwarded to the admin app
+    path("api/", include("api.urls")) # requests to /api/ are forwarded to the api app
 ]
 ```
 
 <a name="25-registering-models-in-the-admin-panel"></a>
 
-### 2.6. Registering models in the admin panel
+### 2.5. Registering models in the admin panel
 
 ```py
 # api/admin.py
@@ -359,6 +361,30 @@ class ItemListCreateView(generics.ListCreateAPIView):
 class ItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+```
+
+- When we use generic views in DRF, we typically define the routes using Django's `path` + `include` functions inside `urls.py`.
+- Differently from the ViewSets, generic views don't require routers
+
+```py
+# app/urls.py
+
+from django.urls import path
+from .views import ItemListCreateView, ItemDetailView
+
+urlspatterns = [
+    path("items/", ItemListCreateView.as_view(), name="item-list"),
+    path("items/<int:pk>", ItemDetailView.as_view(), name="item-detail")
+]
+
+# project/urls.py
+from django.contrib import admin
+from django.urls import path, include
+
+urlspatterns = [
+    path("admin/", admin.site.urls),
+    path("api/", include("api.urls")) # include the app url
+]
 ```
 
 #### When to use it?
