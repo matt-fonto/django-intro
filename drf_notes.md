@@ -541,12 +541,74 @@ def test_unauthorized_access(self):
     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 ```
 
+## 6. Authentication and Permissions
+
+- DRF provides different authentication mechanisms:
+  - 1. SessionAuthentication (default, uses django sessions)
+  - 2. BasicAuthentication (uses username/password)
+  - 3. TokenAuthentication (used for API-based authentication)
+  - 4. JWT Authentication (more secure, used in modern APIs)
+
+### 6.1 JWT Authentication
+
+- Install deps
+
+```bash
+pip install djangorestframework-simplejwt
+```
+
+- Setup the jwt in the settings
+
+```py
+#settings.py
+
+INSTALLED_APPS = [
+    ...,
+    'rest_framework',
+    'rest_framework.authtoken',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+```
+
+- Create tokens for users
+
+```bash
+python manage.py drf_create_token <username>
+```
+
+- Now, users can authenticate using:
+
+```http
+Authorization: Token <your_token>
+```
+
+### 6.2 Permissions
+
+- DRF allows restricting access using permission classes
+
+```py
+
+```
+
+## 7. Pagination
+
+## 8. Filtering, Searching, and Ordering
+
+## 9. Caching
+
+## 10. SerializerMethodField
+
 <!--
 To study:
-    - testing drf
-    - filtering, ordering, pagination
+    - authentication & permissions
+    - pagination
+    - filtering, searching, ordering
     - authentication
-    - permissions
     - caching
-    - serializer search: dynamic
+    - SerializerMethodField()
  -->
