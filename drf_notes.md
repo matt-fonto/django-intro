@@ -27,6 +27,8 @@
    - 4.4. [Generic Views](#44-generic-views)
    - 4.5. [ViewSets](#45-viewsets)
 5. [DRF Unit Testing](#5-drf-unit-testing)
+   - 5.1. [`setUpTestData()`: run tests once before test set](#51-setuptestdata-run-tests-once-before-test-set)
+   - 5.2. [Testing authentication](#52-testing-authentication)
 
 <a name="1-setup"></a>
 
@@ -433,6 +435,8 @@ urlpatterns = [
 ]
 ```
 
+<a name="5-drf-unit-testing"></a>
+
 ## 5. DRF Unit Testing
 
 - Django uses Python's `unittest` module.
@@ -514,6 +518,8 @@ python manage.py test api -v 2 # detailed
 docker compose run web python manage.py test api # running tests inside docker
 ```
 
+<a name="51-setuptestdata-run-tests-once-before-test-set"></a>
+
 ### 5.1 `setUpTestData()`: run tests once before test set
 
 - While `setUp()` runs before each test (similar to beforeEach), `setUpTestData()` runs once before the test set (similar to beforeAll or before)
@@ -523,6 +529,8 @@ docker compose run web python manage.py test api # running tests inside docker
 def setUpTestData(cls):
     cls.item = Item.objects.create(name="Persistent item", description="this data is reused")
 ```
+
+<a name="52-testing-authentication"></a>
 
 ### 5.2 Testing authentication
 
