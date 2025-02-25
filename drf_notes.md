@@ -592,10 +592,84 @@ Authorization: Token <your_token>
 - DRF allows restricting access using permission classes
 
 ```py
+## Custom permission
 
+from rest_framework.permissions import BasePermission
+
+class IsOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.owner == request.user
+
+# Apply to view
+
+from rest_framework.permissions import IsAuthenticated
+
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    permission_classes = [IsAuthenticated, IsOwner] # ensures users who are authenticated an owners can modify this item
 ```
 
+- What other relevant permissions are there?
+
 ## 7. Pagination
+
+```py
+# settings.py
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+```
+
+- Now, API responses include pagination metadata
+
+```json
+{
+    "count": 100,
+    "next": "http://127.0.0.1:8000/api/items/?page=2",
+    "previous": null,
+    "results": [...]
+}
+```
+
+### 7.1 Custom Pagination
+
+```py
+# pagination.py
+
+from rest_framework.pagination import PageNumberPagination
+
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size = 5 # default page size
+    page_size_query_param = "page_size" # allows client to control size
+    max_page_size = 50 # limit max page size
+
+# apply to view
+from rest_framework.generics import ListAPIView
+from .models import Item
+from .serializers import ItemSerializer
+from .pagination import CustomPageNumberPagination
+
+class ItemListView(ListAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    pagination_class = CustomPageNumberPagination
+```
+
+- Now, clients can control page size dynamically
+
+```bash
+GET /api/items/?page=1&page_size=10
+```
+
+### 7.2 Pagination possibilities (in a nutshell)
+
+- Global pagination
+- Page number (custom pagination)
+- Cursor Pagination (infinite scrolling)
+- Limit-offset pagination (large data sets)
 
 ## 8. Filtering, Searching, and Ordering
 
