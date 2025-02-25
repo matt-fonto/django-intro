@@ -511,7 +511,26 @@ class ItemAPITestCase(APITestCase):
 python manage.py test api
 python manage.py test api -v 2 # detailed
 
-docker-compose run web python manage.py test api # running tests inside docker
+docker compose run web python manage.py test api # running tests inside docker
+```
+
+### 5.1 `setUpTestData()`: run tests once before test set
+
+- While `setUp()` runs before each test (similar to beforeEach), `setUpTestData()` runs once before the test set (similar to beforeAll or before)
+
+```py
+@classmethod
+def setUpTestData(cls):
+    cls.item = Item.objects.create(name="Persistent item", description="this data is reused")
+```
+
+### 5.2 Testing authentication
+
+```py
+def test_unauthorized_access(self):
+    self.client.logout()
+    response = self.client.get(self.list_url)
+    self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 ```
 
 <!--

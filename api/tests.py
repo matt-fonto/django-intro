@@ -4,6 +4,13 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import Item
 
+""" 
+    === run tests inside container ===
+    docker compose run <service> <command>
+    docker compose run web python manage.py test api 
+"""
+
+
 class ItemAPITestCase(APITestCase):
     def setUp(self):
         """
