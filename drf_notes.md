@@ -673,6 +673,40 @@ GET /api/items/?page=1&page_size=10
 
 ## 8. Filtering, Searching, and Ordering
 
+- Install `django-filter`:
+
+```bash
+pip install django-filter
+```
+
+- Modify `settings.py`
+
+```py
+### settings
+INSTALLED_APPS += ['django-filters']
+
+REST_FRAMEWORK['DEFAULT_FILTER_BACKENDS'] = ['django_filters.rest_framework.DjangoFilterBackend']
+```
+
+```py
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'description'] # FILTERING
+    search_fields = ['name', 'description'] # SEARCHING
+    ordering_fields = ['name', 'id'] # ORDERING
+```
+
+```bash
+/api/items/?name=chair # filtering
+/api/items/?search=table # searching
+/api/items/?ordering=name # ordering
+```
+
 ## 9. Caching
 
 ## 10. SerializerMethodField
