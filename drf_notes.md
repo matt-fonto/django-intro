@@ -38,6 +38,13 @@
 8. [Filtering, Searching, and Ordering](#8-filtering-searching-and-ordering)
 9. [Caching](#9-caching)
 10. [SerializerMethodField](#10-serializermethodfield)
+    - 10.1. [Formatting fields (Modify output data)](#101-formatting-fields-modify-output-data)
+    - 10.2. [Fetching related object data (without ForeignKey)](#102-fetching-related-object-data-withoutforeignkey)
+    - 10.3. [Possibilities (in a nutshell)](#103-possibilities-in-a-nutshell)
+    - 10.4. [Benefits](#104-benefits)
+11. [`self` and `obj`](#11-self-and-obj)
+    - 11.1. [`self` - class instance](#111-self---class-instance)
+    - 11.2. [`obj` - model instance](#112-obj---model-instance)
 
 <a name="1-setup"></a>
 
@@ -778,6 +785,8 @@ class ExampleSerializer(serializers.ModelSerializer):
 
 ### Examples
 
+<a name="101-formatting-fields-modify-output-data"></a>
+
 #### 10.1. Formatting fields (Modify output data)
 
 ```py
@@ -791,6 +800,8 @@ class ItemSerializer(serializers.ModelSerializer):
     def get_capitalized_name(self, obj):
         return obj.name.upper()
 ```
+
+<a name="102-fetching-related-object-data-withoutforeignkey"></a>
 
 #### 10.2. Fetching related object data (without ForeignKey)
 
@@ -810,6 +821,8 @@ class BookSerializer(serializers.ModelSerializer):
         return obj.reviews.count()
 ```
 
+<a name="103-possibilities-in-a-nutshell"></a>
+
 #### 10.3 Possibilities (in a nutshell)
 
 - Format fields
@@ -818,19 +831,27 @@ class BookSerializer(serializers.ModelSerializer):
 - Fetch external API data
 - Control user permissions
 
+<a name="104-benefits"></a>
+
 #### 10.4 Benefits
 
 - No need to modify models
 - Great for customizing API responses
 - Works even with external APIs
 
+<a name="11-self-and-obj"></a>
+
 ## 11. `self` and `obj`
+
+<a name="111-self---class-instance"></a>
 
 ### 11.1 `self` - class instance
 
 - Represents the class instance (Serializer or View)
 - Current instance of the class
 - Used to access methods and attributes of the **serializer or view**
+
+<a name="112-obj---model-instance"></a>
 
 ### 11.2 `obj` - model instance
 
