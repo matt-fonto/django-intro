@@ -760,6 +760,70 @@ class ItemListView(generics.ListAPIView):
 
 ## 10. SerializerMethodField
 
+- It's a _read-only field_ that allows customization of how data is presented in API responses
+- It allows the inclusion of _computed or related data_ that is not directly a model field
+- Computed field that does not exist in the model, but allows dynamic data processing
+- It needs a method inside the serializer to determine how this field is populated
+  > method should be called get\_<field_name>, where <field_name> matches the serializer field
+
+```py
+from rest_framework import serializers
+
+class ExampleSerializer(serializers.ModelSerializer):
+    custom_field = serializers.SerializerMethodField()
+
+    def get_custom_field(self, obj):
+        return f"Custom data for {obj.name}"
+```
+
+### Examples
+
+#### 10.1. Formatting fields (Modify output data)
+
+```py
+class ItemSerializer(serializers.ModelSerializer):
+    capitalized_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Item
+        fields ['id', 'name', 'capitalized_name']
+
+    def get_capitalized_name(self, obj):
+        return obj.name.upper()
+```
+
+#### 10.2. Fetching related object data (without ForeignKey)
+
+```py
+class BookSerializer(serializers.ModelSerializer):
+    authon_name = serializers.SerializerMethodField()
+    review_count = serializers.SerializerMethodField() # 10.3. Counting related items (aggregations)
+
+    class Meta:
+        model = Book
+        fields = ['id', 'title', 'author_name', 'review_count']
+
+    def get_author_name(self, obj):
+        return obj.author.full_name
+
+    def get_review_count(self, obj):
+        return obj.reviews.count()
+```
+
+#### 10.3 Possibilities (in a nutshell)
+
+- Format fields
+- Show related data
+- Count related items
+- Fetch external API data
+- Control user permissions
+
+#### 10.4 Benefits
+
+- No need to modify models
+- Great for customizing API responses
+- Works even with external APIs
+
 <!--
 To study:
     - authentication & permissions
