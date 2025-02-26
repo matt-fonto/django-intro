@@ -709,6 +709,34 @@ class ItemViewSet(viewsets.ModelViewSet):
 
 ## 9. Caching
 
+- Speeds up API responses
+
+```python
+# settings.py
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+    }
+}
+```
+
+- Apply caching to a view
+
+```py
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_creator
+
+class ItemListView(generics.ListAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
+    @method_decorator(cache_page(60*15)) # cache for 15 minutes
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+```
+
 ## 10. SerializerMethodField
 
 <!--
