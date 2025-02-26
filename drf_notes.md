@@ -796,7 +796,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
 ```py
 class BookSerializer(serializers.ModelSerializer):
-    authon_name = serializers.SerializerMethodField()
+    author_name = serializers.SerializerMethodField()
     review_count = serializers.SerializerMethodField() # 10.3. Counting related items (aggregations)
 
     class Meta:
@@ -824,12 +824,35 @@ class BookSerializer(serializers.ModelSerializer):
 - Great for customizing API responses
 - Works even with external APIs
 
-<!--
-To study:
-    - authentication & permissions
-    - pagination
-    - filtering, searching, ordering
-    - authentication
-    - caching
-    - SerializerMethodField()
- -->
+## 11. `self` and `obj`
+
+### 11.1 `self` - class instance
+
+- Represents the class instance (Serializer or View)
+- Current instance of the class
+- Used to access methods and attributes of the **serializer or view**
+
+### 11.2 `obj` - model instance
+
+- Represents the model instance
+- The specific model instance being processed
+- Represents **one row** from the database
+
+```py
+from rest_framework import serializers
+from .models import Item
+
+class ItemSerializer(serializers.ModelSerializer):
+    custom_field = serializers.SerializerMethodField()
+    has_description = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Item
+        fields = ['id', 'name', 'custom_field', 'has_description']
+
+    def get_custom_field(self, obj): # self is the serializer instance
+        return f"Custom data for {obj.name}"
+
+    def get_has_description(self, obj):
+        return bool(obj.description) # obj model instance
+```
