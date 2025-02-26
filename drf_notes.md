@@ -29,6 +29,15 @@
 5. [DRF Unit Testing](#5-drf-unit-testing)
    - 5.1. [`setUpTestData()`: run tests once before test set](#51-setuptestdata-run-tests-once-before-test-set)
    - 5.2. [Testing authentication](#52-testing-authentication)
+6. [Authentication and Permissions](#6-authentication-and-permissions)
+   - 6.1. [JWT Authentication](#61-jwt-authentication)
+   - 6.2. [Permissions](#62-permissions)
+7. [Pagination](#7-pagination)
+   - 7.1. [Custom Pagination](#71-custom-pagination)
+   - 7.2. [Pagination possibilities (in a nutshell)](#72-pagination-possibilities-in-a-nutshell)
+8. [Filtering, Searching, and Ordering](#8-filtering-searching-and-ordering)
+9. [Caching](#9-caching)
+10. [SerializerMethodField](#10-serializermethodfield)
 
 <a name="1-setup"></a>
 
@@ -612,6 +621,8 @@ class ItemViewSet(viewsets.ModelViewSet):
 
 - What other relevant permissions are there?
 
+<a name="7-pagination"></a>
+
 ## 7. Pagination
 
 ```py
@@ -633,6 +644,8 @@ REST_FRAMEWORK = {
     "results": [...]
 }
 ```
+
+<a name="71-custom-pagination"></a>
 
 ### 7.1 Custom Pagination
 
@@ -664,12 +677,16 @@ class ItemListView(ListAPIView):
 GET /api/items/?page=1&page_size=10
 ```
 
+<a name="72-pagination-possibilities-in-a-nutshell"></a>
+
 ### 7.2 Pagination possibilities (in a nutshell)
 
 - Global pagination
 - Page number (custom pagination)
 - Cursor Pagination (infinite scrolling)
 - Limit-offset pagination (large data sets)
+
+<a name="8-filtering-searching-and-ordering"></a>
 
 ## 8. Filtering, Searching, and Ordering
 
@@ -707,6 +724,8 @@ class ItemViewSet(viewsets.ModelViewSet):
 /api/items/?ordering=name # ordering
 ```
 
+<a name="9-caching"></a>
+
 ## 9. Caching
 
 - Speeds up API responses
@@ -736,6 +755,8 @@ class ItemListView(generics.ListAPIView):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 ```
+
+<a name="10-serializermethodfield"></a>
 
 ## 10. SerializerMethodField
 
