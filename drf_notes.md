@@ -877,3 +877,40 @@ class ItemSerializer(serializers.ModelSerializer):
     def get_has_description(self, obj):
         return bool(obj.description) # obj model instance
 ```
+
+## 12. Throttling
+
+- Limits the number of API requests a user can make in a given time
+
+### 12.1 Global throttling
+
+```py
+# settings.py
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle', # unauthenticated users
+        'rest_framework.throttling.UserRateThrottle', # authenticated users
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/hour',
+    }
+}
+```
+
+### 12.2 Custom throttling
+
+```py
+# custom throttle
+from rest_framework.throttling import UserRateThrottle
+
+class CustomThrottle(UserRateThrottle):
+    rate = '5/min'
+
+# apply to view(s)
+from rest_framework.throttling import ScopedRateThrottle
+
+class ItemListView(generics.ListAPIView):
+    throttle_classes = [CustomThrottle]
+```
